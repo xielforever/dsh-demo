@@ -1,0 +1,22 @@
+{
+  "fixtureVersion": "v1",
+  "baselineRef": "fixture/baseline-v1",
+  "projectLifecycle": "FINITE",
+  "milestoneKind": "DELIVERY",
+  "environment": "local/dev",
+  "risk": "LOW",
+  "expectedTaskCount": {
+    "min": 3,
+    "max": 5
+  },
+  "regressionCommand": "npm test",
+  "acceptanceCommand": "npm run acceptance",
+  "baselineExpectation": {
+    "regression": "PASS",
+    "acceptance": "FAIL"
+  },
+  "deliveredExpectation": {
+    "regression": "PASS",
+    "acceptance": "PASS"
+  }
+}

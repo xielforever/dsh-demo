@@ -1,0 +1,23 @@
+[
+  {
+    "service": " API ",
+    "checks": [
+      { "name": " HTTP ", "status": "pass" },
+      { "name": "Database", "status": "pass" }
+    ]
+  },
+  {
+    "service": "Worker",
+    "checks": [
+      { "name": "Queue", "status": "warn" },
+      { "name": "Database", "status": "pass" }
+    ]
+  },
+  {
+    "service": "Billing",
+    "checks": [
+      { "name": "HTTP", "status": "fail" },
+      { "name": "Database", "status": "pass" }
+    ]
+  }
+]
