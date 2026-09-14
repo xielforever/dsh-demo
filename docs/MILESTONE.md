@@ -5,8 +5,8 @@
 - Kind: `DELIVERY`
 - Environment: `local/dev`
 - Risk: `LOW`
-- Schedule mode for demo: `MANUAL`
-- Expected autonomous decomposition: 3-5 dependent tasks
+- Schedule mode: `MANUAL`
+- Current fixture execution model: one persisted coding task
 
 ## Goal
 
@@ -36,13 +36,11 @@ Rules:
 
 ## Per-service classification
 
-For each service:
-
 - `unhealthy` if any check is `fail`;
 - otherwise `degraded` if any check is `warn`;
 - otherwise `healthy`.
 
-The normalized result shape is:
+Normalized result:
 
 ```json
 {
@@ -54,7 +52,7 @@ The normalized result shape is:
 
 ## Fleet summary
 
-Given all service records, return:
+Return exact counts:
 
 ```json
 {
@@ -65,68 +63,50 @@ Given all service records, return:
 }
 ```
 
-Counts must exactly match evaluated services.
-
 ## CLI
-
-The command:
 
 ```bash
 node src/cli.js fixtures/services.json
 ```
 
-must write one valid JSON document to stdout with this shape:
+The CLI must write one valid JSON document containing:
 
-```json
-{
-  "services": [
-    { "service": "api", "status": "healthy", "checkCount": 2 }
-  ],
-  "summary": {
-    "total": 1,
-    "healthy": 1,
-    "degraded": 0,
-    "unhealthy": 0
-  }
-}
+- `services`: normalized results in input order;
+- `summary`: exact fleet counts.
+
+For missing path, unreadable file, invalid JSON, or invalid service/check data, it must write a concise error to stderr, exit non-zero, and not emit a successful JSON result.
+
+## Required deterministic acceptance
+
+The candidate must pass:
+
+```bash
+npm run verify
 ```
 
-The actual fixture contains more than one service. Preserve input service order in the `services` array.
+This command combines regression and milestone acceptance. The acceptance suite verifies:
 
-For missing path, unreadable file, invalid JSON, or invalid service/check data, CLI must:
+1. healthy/degraded/unhealthy precedence;
+2. invalid check status rejection;
+3. empty check list rejection;
+4. exact fleet counts;
+5. deterministic CLI output for `fixtures/services.json`;
+6. clean CLI failure when no input path is supplied.
 
-- write a concise error to stderr;
-- exit non-zero;
-- not emit a successful result document.
+## Required implementation outcome
 
-## Required acceptance
-
-### Deterministic
-
-1. Baseline regression suite remains green: `npm test`.
-2. Milestone acceptance suite passes: `npm run acceptance`.
-3. Healthy/degraded/unhealthy precedence matches the rules above.
-4. Invalid check status is rejected.
-5. Empty check list is rejected.
-6. Fleet counts are exact.
-7. CLI output for `fixtures/services.json` is valid JSON and matches the expected normalized result.
-
-### Semantic
-
-1. `README.md` clearly documents the status rules.
-2. `README.md` includes the finished CLI usage and expected output concept.
-3. Implementation remains small and readable; no third-party dependency is introduced.
+- finish `evaluateService`;
+- finish `summarizeFleet`;
+- finish `src/cli.js`;
+- preserve existing smoke behavior;
+- update `README.md` with final status rules and CLI usage;
+- keep the implementation small and readable;
+- add no third-party dependency.
 
 ## Non-goals
 
-- HTTP server;
-- persistence/database;
-- authentication;
-- network health probing;
-- UI;
-- production monitoring;
-- concurrency or streaming.
+HTTP server, persistence/database, authentication, network probing, UI, production monitoring, concurrency, streaming.
 
 ## Change policy
 
-If these criteria are internally inconsistent or technically impossible, stop and request a Human Gate. Do not alter the acceptance contract to make an implementation pass.
+If the acceptance contract is inconsistent or impossible, stop for Human Gate. Do not modify frozen acceptance files to make the implementation pass.

@@ -5,18 +5,18 @@
   "milestoneKind": "DELIVERY",
   "environment": "local/dev",
   "risk": "LOW",
-  "expectedTaskCount": {
-    "min": 3,
-    "max": 5
-  },
+  "expectedTaskCount": 1,
   "regressionCommand": "npm test",
   "acceptanceCommand": "npm run acceptance",
+  "validatorCommand": "npm run verify",
   "baselineExpectation": {
     "regression": "PASS",
-    "acceptance": "FAIL"
+    "acceptance": "FAIL",
+    "validator": "FAIL"
   },
   "deliveredExpectation": {
     "regression": "PASS",
-    "acceptance": "PASS"
+    "acceptance": "PASS",
+    "validator": "PASS"
   }
 }

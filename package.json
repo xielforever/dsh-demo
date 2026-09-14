@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "node --test test/smoke.test.js",
-    "acceptance": "node --test test/acceptance.test.js"
+    "acceptance": "node --test test/acceptance.test.js",
+    "verify": "npm test && npm run acceptance"
   }
 }
